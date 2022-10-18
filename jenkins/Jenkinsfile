@@ -1,0 +1,103 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('install requirements') {
+            steps {
+                echo 'install requirements'
+                sh 'pwd'                              
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'jenkins-httpd-ubuntu-4', 
+                            transfers: [
+                                sshTransfer(
+                                    cleanRemote: false, 
+                                    excludes: '', 
+                                    execCommand: 'sudo pip install -r requirements.txt', 
+                                    execTimeout: 120000, 
+                                    flatten: false, 
+                                    makeEmptyDirs: false, 
+                                    noDefaultExcludes: false, 
+                                    patternSeparator: '[, ]+', 
+                                    remoteDirectory: '', 
+                                    remoteDirectorySDF: false, 
+                                    removePrefix: '', 
+                                    sourceFiles: 'requirements.txt')], 
+                                    usePromotionTimestamp: false, 
+                                    useWorkspaceInPromotion: false, 
+                                    verbose: false
+                                    )
+                                ]
+                            )
+            }
+        }       
+        stage('Copy Flaskapp to Webserver') {
+            steps {
+                echo 'Copy Flaskapp to Webserver'
+                sh 'pwd'
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'jenkins-httpd-ubuntu-4', 
+                            transfers: [
+                                sshTransfer(
+                                    cleanRemote: false, 
+                                    excludes: '', 
+                                    execCommand: 'cp flaskapp.py flaskapp.wsgi /var/www/html/flaskapp/', 
+                                    execTimeout: 120000, 
+                                    flatten: false, 
+                                    makeEmptyDirs: false, 
+                                    noDefaultExcludes: false, 
+                                    patternSeparator: '[, ]+', 
+                                    remoteDirectory: '', 
+                                    remoteDirectorySDF: false, 
+                                    removePrefix: '', 
+                                    sourceFiles: 'flaskapp.py flaskapp.wsgi')], 
+                                    usePromotionTimestamp: false, 
+                                    useWorkspaceInPromotion: false, 
+                                    verbose: false
+                                    )
+                                ]
+                            )
+            }
+        }
+        stage('Test Application on Webserver') {
+            steps {
+                echo 'Test Application on Webserver'
+                sh 'pwd'
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'jenkins-httpd-ubuntu-4', 
+                            transfers: [
+                                sshTransfer(
+                                    cleanRemote: false, 
+                                    excludes: '', 
+                                    execCommand: '/usr/bin/python3 -m pytest --junit-xml=pytest_unit.xml || true', 
+                                    execTimeout: 120000, 
+                                    flatten: false, 
+                                    makeEmptyDirs: false, 
+                                    noDefaultExcludes: false, 
+                                    patternSeparator: '[, ]+', 
+                                    remoteDirectory: '', 
+                                    remoteDirectorySDF: false, 
+                                    removePrefix: '', 
+                                    sourceFiles: 'test_flaskapp.py')], 
+                                    usePromotionTimestamp: false, 
+                                    useWorkspaceInPromotion: false, 
+                                    verbose: false
+                                    )
+                                ]
+                            )
+            }
+            post {
+                always {
+                    sh 'pwd'
+                    sh 'scp jenkins@10.128.0.7:/home/jenkins/pytest_unit.xml .'
+                    junit 'pytest_unit.xml'
+                }
+            }
+        }    
+    }       
+}

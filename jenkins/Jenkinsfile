@@ -15,7 +15,7 @@ pipeline {
       stage('Push Docker Image to GCR') {
         steps {
           script {
-            withDockerRegistry(credentialsId: 'gcr:Jenkins', url: 'https://gcr.io/')
+            withDockerRegistry(credentialsId: 'gcr:aaa', url: 'https://gcr.io/')
             {
               dockerImage.push()
             }

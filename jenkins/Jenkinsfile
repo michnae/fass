@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    enviroment {
+    environment {
       registry = "gcr.io/jenkins-360510/python-fahrenheit-docker-0815"
       dockerimage = ''
     }

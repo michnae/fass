@@ -66,9 +66,7 @@ pipeline {
              final String interne_url = "http://${internalIPVM}:5000"
 
              final def (String response, int code) =
-               sh(script: "curl -s -w '\\n%{response_code}' $interne_url", returnStdout: true)
-                  .trim()
-                  .tokenize("\n")
+               sh(script: "curl -s -o /dev/null -I -w '%{response_code}' $interne_url")
 
                echo "Interner Test: HTTP response status code: $code"
 

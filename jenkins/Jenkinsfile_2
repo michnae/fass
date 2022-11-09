@@ -83,7 +83,7 @@ pipeline {
              final String public_url = "http://${externalIPVM}:5000"
 
              final def (String response, int code) =
-               sh(script: "curl -s -o /dev/null -I -w '%{response_code}' $interne_url")
+               sh(script: "curl -s -o /dev/null -I -w '%{response_code}' $public_url")
 
                echo "External Test: HTTP response status code: $code"
 

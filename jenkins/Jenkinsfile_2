@@ -64,15 +64,12 @@ pipeline {
        steps {
             script {
              final String interne_url = "http://${internalIPVM}:5000"
+             int status = sh(script: "curl -sLI -w '%{http_code}' $interne_url -o /dev/null", returnStdout: true)
+             if ($status == 200) {
+               echo "ok"
+             }
 
-             final def (String response, int code) =
-               sh(script: "curl -s -o /dev/null -w '%{response_code}' $interne_url")
-
-               echo "Interner Test: HTTP response status code: $code"
-
-               if (code == 200) {
-                 echo response
-              }
+              
             }
         }
     }

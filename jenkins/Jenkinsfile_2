@@ -64,38 +64,29 @@ pipeline {
        steps {
             script {
              final String interne_url = "http://${internalIPVM}:5000"
+             status = sh(script: "curl -sLI -w '%{http_code}' $interne_url -o /dev/null", returnStdout: true)
+             if (status == 200) {
+               echo "ok"
+             }
 
-             final def (String response, int code) =
-               sh(script: "curl -s -w '\\n%{response_code}' $interne_url", returnStdout: true)
-                                .trim()
-                                .tokenize("\n")
-
-               echo "Interner Test: HTTP response status code: $code"
-
-              if (code == 200) {
-                echo response
-              }
+              
             }
         }
     }
 
-     stage("Curl-Test external VM IP") {
+   stage("curl-test external VM IP") {
        steps {
             script {
-             final String public_url = "http://${externalIPVM}:5000"
+             final String externe_url = "http://${externalIPVM}:5000"
+             status = sh(script: "curl -sLI -w '%{http_code}' $externe_url -o /dev/null", returnStdout: true)
+             if (status == 200) {
+               echo "ok"
+             }
 
-             final def (String response, int code) =
-               sh(script: "curl -s -o /dev/null -I -w '%{response_code}' $public_url")
-
-               echo "External Test: HTTP response status code: $code"
-
-              if (code == 200) {
-                echo response
-              }
+              
             }
         }
     }
-
 
   }
 }

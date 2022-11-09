@@ -74,6 +74,20 @@ pipeline {
         }
     }
 
+   stage("curl-test external VM IP") {
+       steps {
+            script {
+             final String externe_url = "http://${externalIPVM}:5000"
+             status = sh(script: "curl -sLI -w '%{http_code}' $externe_url -o /dev/null", returnStdout: true)
+             if (status == 200) {
+               echo "ok"
+             }
+
+              
+            }
+        }
+    }
+
 
   }
 }

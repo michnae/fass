@@ -70,8 +70,8 @@ pipeline {
 
                echo "Interner Test: HTTP response status code: $code"
 
-              if (code == 200) {
-                echo response
+               if (code == 200) {
+                 echo response
               }
             }
         }

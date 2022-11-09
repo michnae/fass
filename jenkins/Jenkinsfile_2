@@ -64,8 +64,8 @@ pipeline {
        steps {
             script {
              final String interne_url = "http://${internalIPVM}:5000"
-             int status = sh(script: "curl -sLI -w '%{http_code}' $interne_url -o /dev/null", returnStdout: true)
-             if ($status == 200) {
+             status = sh(script: "curl -sLI -w '%{http_code}' $interne_url -o /dev/null", returnStdout: true)
+             if ($status == "200") {
                echo "ok"
              }
 

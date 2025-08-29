@@ -1,0 +1,15 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+inputs:
+  - name: source-code
+run:
+  path: sh
+  args:
+    - -c
+    - |
+      echo "Files in repository:"
+      find source-code -type f | wc -l
+      ls -la source-code/
